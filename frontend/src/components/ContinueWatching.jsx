@@ -1,23 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { FaPlayCircle, FaFire, FaTv } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaPlayCircle, FaTv } from "react-icons/fa";
 
 const ContinueWatching = () => {
+  const navigate = useNavigate();
   const continueWatching = [
     {
       id: 1,
-      title: "AI-Powered Gaming",
-      img: "https://source.unsplash.com/600x400/?gaming,neon",
+      title: "Basketball Stream",
+      video: "/preview/4.mp4", // replace with actual basketball stream
     },
     {
       id: 2,
-      title: "Tech Talks Live",
-      img: "https://source.unsplash.com/600x400/?technology,stream",
+      title: "Gaming Stream",
+      video: "/preview/6.mp4", // replace with actual gaming stream
     },
     {
       id: 3,
-      title: "AI Music Vibes",
-      img: "https://source.unsplash.com/600x400/?music,concert",
+      title: "Football Stream",
+      video: "/preview/8.mp4", // replace with actual football stream
     },
   ];
 
@@ -29,13 +30,16 @@ const ContinueWatching = () => {
       <div className="flex overflow-x-auto space-x-6 pb-3 scrollbar-thin scrollbar-thumb-red-500 scrollbar-track-gray-800">
         {continueWatching.map((stream) => (
           <div
+            onClick={() => navigate("/player")}
             key={stream.id}
             className="min-w-[300px] relative group rounded-2xl overflow-hidden shadow-lg cursor-pointer"
           >
-            <img
-              src={stream.img}
-              alt={stream.title}
+            <video
+              src={stream.video}
               className="w-full h-52 object-cover group-hover:opacity-80 transition duration-300"
+              autoPlay
+              muted
+              loop
             />
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center items-center">
               <h3 className="text-xl font-bold mb-2">{stream.title}</h3>

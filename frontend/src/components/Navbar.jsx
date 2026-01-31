@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useAuthStore } from "../store/useAuthStore";
+import { IoMdLogOut } from "react-icons/io";
+import { FaUserAstronaut } from "react-icons/fa";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { authUser, isAuthenticate, logout } = useAuthStore();
@@ -25,18 +28,34 @@ const Navbar = () => {
         {/* Right: Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
           <NavLink to="/" label="Home" />
-          <NavLink to="/stream" label="Streams" />
-          <NavLink to="/about" label="About" />
+          <NavLink to="/explore" label="Live Streams" />
+          <NavLink to="/" label="About" />
 
-          {authUser?<div onClick={logout}>
-            logout
-          </div>:
+          {authUser ? (
+            <>
+              <div
+                onClick={() => navigate("/profile")}
+                className="flex gap-1 items-center cursor-pointer"
+              >
+                <FaUserAstronaut className="text-red-600 size-6" />
+                Profile
+              </div>
+              <div
+                onClick={logout}
+                className="flex gap-1 items-center cursor-pointer"
+              >
+                <IoMdLogOut className="text-red-600 size-5" />
+                Logout
+              </div>
+            </>
+          ) : (
             <Link
-            to="/login"
-            className="text-red-500 hover:border-2 hover:border-red-500 px-4 py-2 rounded-lg font-semibold shadow-md transition duration-300"
-          >
-            Login / Sign-in
-          </Link>}
+              to="/login"
+              className="text-red-500 hover:border-2 hover:border-red-500 px-4 py-2 rounded-lg font-semibold shadow-md transition duration-300"
+            >
+              Login / Sign-in
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}

@@ -26,7 +26,7 @@ const Hero = () => {
           intelligent filters, stats and more.
         </p>
         <Link
-          to="/stream/123"
+          to="/player"
           className=" hidden w-1/2 md:w-full bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-full md:text-lg font-semibold sm:flex flex-wrap items-center gap-2 shadow-lg hover:shadow-red-500/40 transition-all"
         >
           <FaPlayCircle /> <span>Start Watching</span>

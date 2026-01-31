@@ -1,38 +1,57 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { FaPlayCircle, FaFire, FaTv } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaPlayCircle, FaFire } from "react-icons/fa";
 
 const Explore = () => {
+  const navigate = useNavigate();
   const liveStreams = [
     {
       id: 1,
       title: "Code with AI",
       viewers: "2.3K watching",
-      img: "https://source.unsplash.com/600x400/?coding,computer",
+      video: "/preview/1.webm",
     },
     {
       id: 2,
       title: "AI Fitness Trainer",
       viewers: "1.1K watching",
-      img: "https://source.unsplash.com/600x400/?fitness,ai",
+      video: "/preview/2.webm",
     },
     {
       id: 3,
       title: "Movie Talk Live",
       viewers: "3.5K watching",
-      img: "https://source.unsplash.com/600x400/?movies,discussion",
+      video: "/preview/3.webm",
     },
     {
       id: 4,
       title: "Gaming Legends",
       viewers: "5.7K watching",
-      img: "https://source.unsplash.com/600x400/?esports,gaming",
+      video: "/preview/4.mp4",
     },
     {
       id: 5,
       title: "Art with AI",
       viewers: "876 watching",
-      img: "https://source.unsplash.com/600x400/?digitalart,ai",
+      video: "/preview/5.mp4",
+    },
+    {
+      id: 6,
+      title: "Tech Reviews Live",
+      viewers: "4.2K watching",
+      video: "/preview/6.mp4",
+    },
+    {
+      id: 7,
+      title: "Music Jam Session",
+      viewers: "2.9K watching",
+      video: "/preview/7.mp4",
+    },
+    {
+      id: 8,
+      title: "Travel Adventures",
+      viewers: "3.1K watching",
+      video: "/preview/8.mp4",
     },
   ];
 
@@ -45,12 +64,15 @@ const Explore = () => {
         {liveStreams.map((stream) => (
           <div
             key={stream.id}
+            onClick={() => navigate("/player")}
             className="relative group overflow-hidden rounded-2xl shadow-lg bg-gray-900 hover:-translate-y-2 transition-transform duration-300 cursor-pointer"
           >
-            <img
-              src={stream.img}
-              alt={stream.title}
+            <video
+              src={stream.video}
               className="w-full h-56 object-cover group-hover:opacity-75 transition-all"
+              autoPlay
+              muted
+              loop
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex flex-col justify-end p-4">
               <h3 className="text-xl font-bold mb-1">{stream.title}</h3>
