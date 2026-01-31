@@ -33,7 +33,6 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Routes>
-<<<<<<< HEAD
           <Route path="/" element={<Dashboard />} />
           <Route path="/view" element={<ViewStream />} />
           <Route path="/start" element={<StartStream />} />
@@ -46,46 +45,3 @@ const App = () => {
 
 export default App;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* <Route
-            path="/"
-            element={authUser ? <HomePage /> : <Navigate to="/login" />}
-          />
-          <Route 
-            path="/player"
-            element= {<StreamPlayer/>}
-          />
-=======
-          <Route path="/" element={<HomePage />} />
->>>>>>> 50ed5d911fce12a7d400858114ba9b6507a510d7
-          <Route
-            path="/login"
-            element={!authUser ? <LoginPage /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/register"
-            element={!authUser ? <RegisterPage /> : <Navigate to="/" />}
-<<<<<<< HEAD
-          /> */}
-=======
-          />
-          <Route path="/player" element={<StreamPlayer />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/explore" element={<ExploreLiveStreamPage />} />
->>>>>>> 50ed5d911fce12a7d400858114ba9b6507a510d7
-          {/* <Route path="/stream/:id" element={<Stream />} /> */}
-          {/* <Route path="/profile" element={<Profile />} /> */}
-          {/* <Route path="/about" element={<About />} /> */}
-          {/* <Route path="/landing" element={<Landing />} /> */}
