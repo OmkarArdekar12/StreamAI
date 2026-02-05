@@ -43,7 +43,6 @@ export default function SignUp(){
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-
                     className="bg-black"
                 />
                 <br></br>
