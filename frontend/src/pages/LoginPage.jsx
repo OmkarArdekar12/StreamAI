@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthImagePattern from "../components/AuthImagePattern";
 import { useAuthStore } from "../store/useAuthStore";
 import toast from "react-hot-toast";
 
+
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const { isLoggingIn, login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,6 +39,7 @@ const LoginPage = () => {
       return;
     }
     login(formData);
+    navigate("/dashboard");
   };
 
   return (

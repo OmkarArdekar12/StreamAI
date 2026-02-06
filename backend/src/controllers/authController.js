@@ -10,12 +10,20 @@ export const registerUser = async (req, res) => {
   }
 
   try {
-    const userExist = await prisma.user.findUnique({
+    const emailExist = await prisma.user.findUnique({
       where: { email },
     });
 
-    if (userExist) {
+    if (emailExist) {
       return res.status(400).json({ message: "Email already exist!!" });
+    }
+
+    const userExist = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (userExist) {
+      return res.status(400).json({ message: "Username already exist!!" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,6 +33,7 @@ export const registerUser = async (req, res) => {
         username,
         email,
         password: hashedPassword,
+        profile_picture: "https://ui-avatars.com/api/?name=" + username + "&background=random",
       },
     });
 
@@ -49,7 +58,6 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
 
   try {

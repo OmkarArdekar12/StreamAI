@@ -27,7 +27,7 @@ const Navbar = () => {
 
         {/* Right: Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
-          <NavLink to="/" label="Home" />
+          <NavLink to="/dashboard" label="Home" />
           <NavLink to="/explore" label="Live Streams" />
           <NavLink to="/" label="About" />
 

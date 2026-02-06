@@ -6,9 +6,9 @@ import SideRecommendations from "../streams/SideRecommendations";
 import CommentsSection from "../streams/CommentsSection";
 import Footer from "../components/Footer";
 
-const StreamPlayer = () => {
+const StreamPlayer2 = () => {
   const videoRef = useRef(null);
-  const streamKey = "test2";
+  const streamKey = "test";
   const hlsUrl = `http://stream.streamai.in:8080/hls/${streamKey}.m3u8`;
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const StreamPlayer = () => {
   );
 };
 
-export default StreamPlayer;
+export default StreamPlayer2;
 
 // import { useEffect, useRef } from "react";
 // import Hls from "hls.js";
