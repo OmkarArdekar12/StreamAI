@@ -3,7 +3,7 @@ import Hls from "hls.js";
 
 const ViewStream = () => {
   const videoRef = useRef(null);
-  const streamUrl = "http://localhost:8080/hls/test.m3u8";
+  const streamUrl = "http://stream.streamai.in:8080/hls/test.m3u8";
 
 
   useEffect(() => {

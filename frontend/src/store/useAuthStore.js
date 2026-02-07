@@ -17,7 +17,7 @@ export const useAuthStore = create((set, get) => ({
       const user = localStorage.getItem("user");
       const expiresAt = localStorage.getItem("expiresAt");
 
-      if (!token || !expiresAt) {
+      if (!token || !expiresAt || !user) {
         throw Error();
       }
 

@@ -10,7 +10,7 @@ const Navbar = () => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { authUser, logout } = useAuthStore();
-
+console.log("Navbar authUser:", authUser);
   /* ================= CLOSE SIDEBAR ON ROUTE CHANGE ================= */
   useEffect(() => {
     setSidebarOpen(false);
@@ -54,7 +54,7 @@ const Navbar = () => {
           <NavLink to="/explore" label="Live Streams" />
           <NavLink to="/about" label="About" />
 
-          {authUser || true ? (
+          {authUser ?(
             <div className="flex items-center gap-6 ml-4">
               <button
                 onClick={() => navigate("/profile")}

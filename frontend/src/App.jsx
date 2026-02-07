@@ -84,7 +84,7 @@ const App = () => {
 
           <Route path="/player" element={<StreamPlayer />} />
           <Route path="/player2" element={<StreamPlayer2 />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/explore" element={<ExploreLiveStreamPage />} />
         </Routes>
       </BrowserRouter>
