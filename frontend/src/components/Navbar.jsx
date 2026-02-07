@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import { IoMdLogOut } from "react-icons/io";
 import { FaUserAstronaut } from "react-icons/fa";
@@ -7,61 +7,96 @@ import { useAuthStore } from "../store/useAuthStore";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { authUser, logout } = useAuthStore();
+
+  /* ================= CLOSE SIDEBAR ON ROUTE CHANGE ================= */
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  /* ================= CLOSE SIDEBAR ON RESIZE ================= */
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  /* ================= LOCK BODY SCROLL ================= */
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [sidebarOpen]);
 
   return (
     <>
       {/* ================= NAVBAR ================= */}
       <nav className="w-full h-16 bg-[#0E0E10] border-b border-[#26262C] flex items-center justify-between px-6 md:px-10 sticky top-0 z-50">
-        {/* ===== Logo ===== */}
+        {/* Logo */}
         <Link
           to="/"
-          className="text-2xl font-extrabold tracking-wide text-[#9147FF] hover:opacity-80 transition"
+          className="text-2xl md:text-3xl font-extrabold text-[#9147FF] hover:opacity-80 transition"
         >
           Stream<span className="text-white">AI</span>
         </Link>
 
-        {/* ===== Desktop Menu ===== */}
+        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <NavLink to="/dashboard" label="Home" />
           <NavLink to="/explore" label="Live Streams" />
           <NavLink to="/about" label="About" />
 
-          {authUser ? (
+          {authUser || true ? (
             <div className="flex items-center gap-6 ml-4">
               <button
                 onClick={() => navigate("/profile")}
-                className="flex items-center gap-2 text-gray-300 hover:text-white transition"
+                className="flex items-center gap-2 text-gray-300 hover:text-white transition bg-[#9147FF] px-4 py-2 rounded-full cursor-pointer"
               >
-                <FaUserAstronaut className="text-[#9147FF] text-lg" />
+                <FaUserAstronaut className="text-white size-5" />
                 Profile
               </button>
 
               <button
                 onClick={logout}
-                className="flex items-center gap-2 text-gray-300 hover:text-white transition"
+                className="flex items-center gap-2 text-gray-300 hover:text-white transition cursor-pointer"
               >
-                <IoMdLogOut className="text-[#9147FF] text-lg" />
+                <IoMdLogOut className="text-[#9147FF] size-5" />
                 Logout
               </button>
             </div>
           ) : (
-            <Link
-              to="/login"
-              className="bg-[#9147FF] hover:bg-[#772CE8] text-white px-4 py-2 rounded-md text-sm font-semibold transition ml-4"
-            >
-              Log In
-            </Link>
+            <div className="flex gap-4 ml-4">
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white transition"
+              >
+                Log In
+              </Link>
+
+              <Link
+                to="/signup"
+                className="bg-[#9147FF] hover:bg-[#772CE8] text-white px-4 py-2 rounded-md text-sm font-semibold transition"
+              >
+                Sign Up
+              </Link>
+            </div>
           )}
         </div>
 
-        {/* ===== Mobile Menu Button ===== */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setSidebarOpen(true)}
-          className="md:hidden text-gray-300 hover:text-white transition"
+          className="md:hidden text-gray-300 hover:text-white transition cursor-pointer"
         >
-          <FiMenu size={24} />
+          <FiMenu size={24} className="text-[#9147FF]" />
         </button>
       </nav>
 
@@ -71,42 +106,26 @@ const Navbar = () => {
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Sidebar Header */}
+        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#26262C]">
           <h2 className="text-lg font-semibold text-[#9147FF]">StreamAI</h2>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="text-gray-300 hover:text-white transition"
+            className="text-gray-300 hover:text-white transition cursor-pointer"
           >
-            <FiX size={24} />
+            <FiX size={24} className="text-[#9147FF]" />
           </button>
         </div>
 
-        {/* Sidebar Links */}
+        {/* Links */}
         <div className="flex flex-col gap-6 mt-6 px-6 text-sm font-medium">
-          <SidebarLink
-            to="/dashboard"
-            label="Home"
-            setSidebarOpen={setSidebarOpen}
-          />
-          <SidebarLink
-            to="/explore"
-            label="Live Streams"
-            setSidebarOpen={setSidebarOpen}
-          />
-          <SidebarLink
-            to="/about"
-            label="About"
-            setSidebarOpen={setSidebarOpen}
-          />
+          <SidebarLink to="/explore" label="Live Streams" />
+          <SidebarLink to="/about" label="About" />
 
           {authUser ? (
             <>
               <button
-                onClick={() => {
-                  navigate("/profile");
-                  setSidebarOpen(false);
-                }}
+                onClick={() => navigate("/profile")}
                 className="flex items-center gap-2 text-gray-300 hover:text-white transition"
               >
                 <FaUserAstronaut className="text-[#9147FF]" />
@@ -114,10 +133,7 @@ const Navbar = () => {
               </button>
 
               <button
-                onClick={() => {
-                  logout();
-                  setSidebarOpen(false);
-                }}
+                onClick={logout}
                 className="flex items-center gap-2 text-gray-300 hover:text-white transition"
               >
                 <IoMdLogOut className="text-[#9147FF]" />
@@ -125,21 +141,20 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <SidebarLink
-              to="/login"
-              label="Log In"
-              setSidebarOpen={setSidebarOpen}
-            />
+            <>
+              <SidebarLink to="/login" label="Log In" />
+              <SidebarLink to="/signup" label="Sign Up" />
+            </>
           )}
         </div>
       </div>
 
-      {/* ===== Overlay ===== */}
+      {/* Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
           onClick={() => setSidebarOpen(false)}
-        ></div>
+        />
       )}
     </>
   );
@@ -151,17 +166,185 @@ const NavLink = ({ to, label }) => (
   </Link>
 );
 
-const SidebarLink = ({ to, label, setSidebarOpen }) => (
-  <Link
-    to={to}
-    onClick={() => setSidebarOpen(false)}
-    className="text-gray-300 hover:text-white transition"
-  >
+const SidebarLink = ({ to, label }) => (
+  <Link to={to} className="text-gray-300 hover:text-white transition">
     {label}
   </Link>
 );
 
 export default Navbar;
+
+// import React, { useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import { FiMenu, FiX } from "react-icons/fi";
+// import { IoMdLogOut } from "react-icons/io";
+// import { FaUserAstronaut } from "react-icons/fa";
+// import { useAuthStore } from "../store/useAuthStore";
+
+// const Navbar = () => {
+//   const navigate = useNavigate();
+//   const [sidebarOpen, setSidebarOpen] = useState(false);
+//   const { authUser, logout } = useAuthStore();
+
+//   return (
+//     <>
+//       {/* ================= NAVBAR ================= */}
+//       <nav className="w-full h-20 bg-[#0E0E10] border-b border-[#26262C] flex items-center justify-between px-6 md:px-10 sticky top-0 z-50">
+//         {/* ===== Logo ===== */}
+//         <Link
+//           to="/"
+//           className="text-3xl font-extrabold tracking-wide text-[#9147FF] hover:opacity-80 transition"
+//         >
+//           Stream<span className="text-white">AI</span>
+//         </Link>
+
+//         {/* ===== Desktop Menu ===== */}
+//         <div className="hidden md:flex items-center gap-8 text-md font-medium">
+//           <NavLink to="/explore" label="Live Streams" />
+//           <NavLink to="/about" label="About" />
+
+//           {authUser || false ? (
+//             <div className="flex items-center gap-6 ml-4">
+//               <button
+//                 onClick={() => navigate("/profile")}
+//                 className="flex items-center gap-2 text-gray-300 hover:text-white transition"
+//               >
+//                 <FaUserAstronaut className="text-[#9147FF] text-lg" />
+//                 Profile
+//               </button>
+
+//               <button
+//                 onClick={logout}
+//                 className="flex items-center gap-2 text-gray-300 hover:text-white transition"
+//               >
+//                 <IoMdLogOut className="text-[#9147FF] text-lg" />
+//                 Logout
+//               </button>
+//             </div>
+//           ) : (
+//             <div className="flex">
+//               <Link
+//                 to="/login"
+//                 className="flex bg-[#9147FF] hover:bg-[#772CE8] text-white px-4 py-2 rounded-full text-sm font-semibold transition ml-4 hover:rounded-md"
+//               >
+//                 Log In
+//               </Link>
+//               <Link
+//                 to="/login"
+//                 className="flex bg-[#9147FF] hover:bg-[#772CE8] text-white px-4 py-2 rounded-md text-sm font-semibold transition ml-4 hover:rounded-full"
+//               >
+//                 Sign Up
+//               </Link>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* ===== Mobile Menu Button ===== */}
+//         <button
+//           onClick={() => setSidebarOpen(true)}
+//           className="md:hidden text-gray-300 hover:text-white transition"
+//         >
+//           <FiMenu size={24} />
+//         </button>
+//       </nav>
+
+//       {/* ================= SIDEBAR ================= */}
+//       <div
+//         className={`fixed top-0 right-0 h-full w-72 bg-[#18181B] border-l border-[#26262C] transform transition-transform duration-300 ease-in-out z-50 ${
+//           sidebarOpen ? "translate-x-0" : "translate-x-full"
+//         }`}
+//       >
+//         {/* Sidebar Header */}
+//         <div className="flex items-center justify-between px-6 py-4 border-b border-[#26262C]">
+//           <h2 className="text-lg font-semibold text-[#9147FF]">StreamAI</h2>
+//           <button
+//             onClick={() => setSidebarOpen(false)}
+//             className="text-gray-300 hover:text-white transition"
+//           >
+//             <FiX size={24} />
+//           </button>
+//         </div>
+
+//         {/* Sidebar Links */}
+//         <div className="flex flex-col gap-6 mt-6 px-6 text-sm font-medium">
+//           <SidebarLink
+//             to="/dashboard"
+//             label="Home"
+//             setSidebarOpen={setSidebarOpen}
+//           />
+//           <SidebarLink
+//             to="/explore"
+//             label="Live Streams"
+//             setSidebarOpen={setSidebarOpen}
+//           />
+//           <SidebarLink
+//             to="/about"
+//             label="About"
+//             setSidebarOpen={setSidebarOpen}
+//           />
+
+//           {authUser || true ? (
+//             <>
+//               <button
+//                 onClick={() => {
+//                   navigate("/profile");
+//                   setSidebarOpen(false);
+//                 }}
+//                 className="flex items-center gap-2 text-gray-300 hover:text-white transition"
+//               >
+//                 <FaUserAstronaut className="text-[#9147FF]" />
+//                 Profile
+//               </button>
+
+//               <button
+//                 onClick={() => {
+//                   logout();
+//                   setSidebarOpen(false);
+//                 }}
+//                 className="flex items-center gap-2 text-gray-300 hover:text-white transition"
+//               >
+//                 <IoMdLogOut className="text-[#9147FF]" />
+//                 Logout
+//               </button>
+//             </>
+//           ) : (
+//             <SidebarLink
+//               to="/login"
+//               label="Log In"
+//               setSidebarOpen={setSidebarOpen}
+//             />
+//           )}
+//         </div>
+//       </div>
+
+//       {/* ===== Overlay ===== */}
+//       {sidebarOpen && (
+//         <div
+//           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+//           onClick={() => setSidebarOpen(false)}
+//         ></div>
+//       )}
+//     </>
+//   );
+// };
+
+// const NavLink = ({ to, label }) => (
+//   <Link to={to} className="text-gray-300 hover:text-white transition">
+//     {label}
+//   </Link>
+// );
+
+// const SidebarLink = ({ to, label, setSidebarOpen }) => (
+//   <Link
+//     to={to}
+//     onClick={() => setSidebarOpen(false)}
+//     className="text-gray-300 hover:text-white transition"
+//   >
+//     {label}
+//   </Link>
+// );
+
+// export default Navbar;
 
 // import React, { useState } from "react";
 // import { Link, useNavigate } from "react-router-dom";
