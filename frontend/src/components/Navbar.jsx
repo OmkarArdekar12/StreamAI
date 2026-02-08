@@ -4,13 +4,21 @@ import { FiMenu, FiX } from "react-icons/fi";
 import { IoMdLogOut } from "react-icons/io";
 import { FaUserAstronaut } from "react-icons/fa";
 import { useAuthStore } from "../store/useAuthStore";
+import { Loader } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { authUser, logout } = useAuthStore();
+  const { authUser, logout, isAuthenticate, isCheckingAuth } = useAuthStore();
+
+  useEffect(() => {
+    isAuthenticate();
+  }, [isAuthenticate]);
+
+
+
 
   /* ================= CLOSE SIDEBAR ON ROUTE CHANGE ================= */
   useEffect(() => {
@@ -54,6 +62,14 @@ const Navbar = () => {
     }
   }, [sidebarOpen]);
 
+  if (isCheckingAuth && !authUser) {
+    return (
+      <div className="bg-[#0e0e0e] flex items-center justify-center h-screen">
+        <Loader className="size-10 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <>
       {/* ================= NAVBAR ================= */}
@@ -70,7 +86,6 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-8 text-sm font-medium">
           <NavLink to="/explore" label="Live Streams" />
           <NavLink to="/about" label="About" />
-
         {authUser ? (
           <div className="relative profile-menu ml-4">
             {/* Profile Icon */}

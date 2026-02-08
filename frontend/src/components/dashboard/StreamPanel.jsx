@@ -1,4 +1,5 @@
 const StreamPanel = () => {
+  
   return (
     <div className="max-w-3xl">
       <h2 className="text-2xl font-bold text-red-500 mb-6">

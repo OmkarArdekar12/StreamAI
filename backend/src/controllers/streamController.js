@@ -4,7 +4,7 @@ import prisma from "../config/prismaClient.js";
 export const createStream = async (req, res) => {
   try {
     const { title, description, category_id, thumbnail } = req.body;
-    const streamer_id = req.user.userId; // Assuming the user's ID is available from the JWT
+    const streamer_id = req.userId; // Assuming the user's ID is available from the JWT
     await prisma.stream.updateMany({
       where: {
         streamer_id: streamer_id,
@@ -160,7 +160,9 @@ export const goLive = async (req, res) => {
   const { id } = req.params;
   try {    const liveStream = await prisma.stream.update({
       where: { stream_id: id },
-      data: { is_live: true },
+      data: { is_live: true,
+        started_at: new Date() 
+      },
     });
     res.status(200).json({ message: "Stream is now live", liveStream });
   } catch (error) {
@@ -173,7 +175,9 @@ export const endStream = async (req, res) => {
   const { id } = req.params;
   try {    const endedStream = await prisma.stream.update({
       where: { stream_id: id },
-      data: { is_live: false },
+      data: { is_live: false ,
+        ended_at: new Date()
+      },
     });
     res.status(200).json({ message: "Stream has ended", endedStream });
   } catch (error) {
