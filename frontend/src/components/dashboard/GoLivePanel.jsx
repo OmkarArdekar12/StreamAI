@@ -51,19 +51,23 @@ const GoLivePanel = () => {
 
   /* ================= DETECT STREAM ================= */
   useEffect(() => {
-    const checkStream = async () => {
-      try {
-        const res = await fetch(HLS_URL, { method: "HEAD" });
-        
-        setIsStreamDetected(res.ok);
-      } catch {
-        setIsStreamDetected(false);
-      }
-    };
+  if (!HLS_URL) return;   // IMPORTANT
 
-    const interval = setInterval(checkStream, 3000);
-    return () => clearInterval(interval);
-  }, []);
+  const checkStream = async () => {
+    try {
+      const res = await fetch(HLS_URL, { method: "HEAD" });
+      setIsStreamDetected(res.ok);
+    } catch (err) {
+      setIsStreamDetected(false);
+    }
+  };
+
+  checkStream(); // run immediately
+  const interval = setInterval(checkStream, 3000);
+
+  return () => clearInterval(interval);
+  }, [HLS_URL]);   // 👈 DEPENDENCY ADDED
+
 
   /* ================= LOAD PLAYER ================= */
   useEffect(() => {
@@ -168,6 +172,7 @@ const GoLivePanel = () => {
       <div className="col-span-2 space-y-6">
 
         <div className="bg-gray-900 p-4 rounded-lg">
+          <div className="mb-4 text-lg font-semibold">Stream Preview</div>
           <video ref={videoRef} autoPlay muted controls className="w-full h-64 bg-black" />
           <div className="mt-2 text-sm">
             {state === "OFFLINE" && <span className="text-gray-400">OFFLINE</span>}
@@ -177,9 +182,12 @@ const GoLivePanel = () => {
         </div>
 
         <div className="bg-gray-900 p-6 rounded-lg space-y-4">
-
+          <p className="text-lg font-semibold">Stream Details</p>
+          <p className="text-sm text-red-500">Title</p>
           <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-gray-800 p-3" placeholder="Title" />
+          <p className="text-sm text-red-500">Description</p>
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-gray-800 p-3" placeholder="Description" />
+          <p className="text-sm text-red-500">Category</p>
           <input value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-gray-800 p-3" placeholder="Category" />
 
           {!streamId && (
@@ -187,13 +195,14 @@ const GoLivePanel = () => {
               Create Stream
             </button>
           )}
+          
 
-          {streamId && state === "READY" && (
+          {streamId && (state === "READY" || state === "LIVE") && (
             <>
               <button onClick={handleSaveMeta} className="bg-gray-700 w-full py-3">
                 Save Metadata
               </button>
-
+            {streamId && state === "READY" &&(
               <button
                 onClick={handleGoLive}
                 disabled={!isStreamDetected}
@@ -201,6 +210,7 @@ const GoLivePanel = () => {
               >
                 Go Live
               </button>
+            )}
             </>
           )}
 
