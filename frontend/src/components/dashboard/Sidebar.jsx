@@ -1,6 +1,6 @@
 import { FaHome, FaVideo, FaChartLine, FaUsers, FaCog, FaHistory, FaChevronLeft, FaChevronRight, FaUser, FaBroadcastTower } from "react-icons/fa";
 import { LuLayoutDashboard } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }) => {
@@ -25,7 +25,7 @@ const tabs = [
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         {sidebarOpen && (
-          <h2 className="text-xl font-bold text-red-500">StreamAI</h2>
+          <h2 className="text-xl font-bold text-red-500"><Link to="/">StreamAI</Link></h2>
         )}
 
         <button

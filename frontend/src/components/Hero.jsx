@@ -1,39 +1,11 @@
 import React from "react";
 import Slider from "react-slick";
 import { FaCircle } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../lib/axios";
 
-const streams = [
-  {
-    id: 1,
-    title: "Fortnite Ranked Grind",
-    streamer: "Oatley",
-    viewers: "2.5K",
-    category: "Fortnite",
-    thumbnail:
-      "https://images.unsplash.com/photo-1610041321461-37a7d578ebad?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    id: 2,
-    title: "Valorant Immortal Push",
-    streamer: "Tenzo",
-    viewers: "1.8K",
-    category: "Valorant",
-    thumbnail:
-      "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    avatar: "https://randomuser.me/api/portraits/men/44.jpg",
-  },
-  {
-    id: 3,
-    title: "Late Night Warzone",
-    streamer: "GhostFPS",
-    viewers: "3.2K",
-    category: "Warzone",
-    thumbnail:
-      "https://images.unsplash.com/photo-1751256743518-5836ec5154e9?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    avatar: "https://randomuser.me/api/portraits/men/55.jpg",
-  },
-];
+
+
 
 const NextArrow = ({ onClick }) => {
   return (
@@ -68,6 +40,40 @@ const PrevArrow = ({ onClick }) => {
 };
 
 const Hero = () => {
+
+const [streams, setStreams] = useState([]);
+
+  useEffect(() => {
+    const fetchStreams = async () => {
+      try {
+        const res = await axiosInstance.get("streams");
+
+        const formatted = res.data.streams.map((s) => ({
+          id: s.stream_id,
+          title: s.title,
+          thumbnail:
+            s.thumbnail_url ||
+            `https://picsum.photos/seed/${s.streamer?.username}/1280/720`, // fallback
+          avatar:
+            s.streamer?.avatar_url ||
+            `https://api.dicebear.com/7.x/initials/svg?seed=${s.streamer?.username}`,
+          streamer: s.streamer?.username || "Unknown",
+          category: s.category?.name || "Streaming",
+          viewers: s.viewer_count || 0,
+          isLive: s.is_live,
+        }));
+
+        setStreams(formatted);
+      } catch (err) {
+        console.error("Failed to fetch streams", err);
+      }
+    };
+
+    fetchStreams();
+  }, []);
+
+
+
   const settings = {
     centerMode: true,
     centerPadding: "120px",
@@ -96,48 +102,56 @@ const Hero = () => {
 
   return (
     <div className="bg-[#0E0E10] py-10 px-10 sm:px-14 md:px-16 lg:px-20 cursor-pointer">
-      <Slider {...settings}>
-        {streams.map((stream) => (
-          <div key={stream.id} className="px-3">
-            <div className="relative rounded-xl overflow-hidden shadow-2xl group">
-              {/* Thumbnail */}
-              <img
-                src={stream.thumbnail}
-                alt={stream.title}
-                className="w-full h-[350px] md:h-[500px] object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+      {streams.length > 0 && (
+        <Slider {...settings}>
 
-              {/* Dark Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-
-              {/* LIVE Badge */}
-              <div className="absolute top-4 left-4 bg-red-600 px-3 py-1 rounded text-xs font-semibold flex items-center gap-2">
-                <FaCircle className="text-white text-[8px]" />
-                LIVE
-              </div>
-
-              {/* Stream Info */}
-              <div className="absolute bottom-6 left-6 flex items-center gap-4">
+          {streams.filter(s => s.isLive).map((stream) => (
+            <div key={stream.id} className="px-3" onClick={() => window.location.href = `/player/${stream.id}`}>
+              <div className="relative rounded-xl overflow-hidden shadow-2xl group">
+                {/* Thumbnail */}
                 <img
-                  src={stream.avatar}
-                  alt="avatar"
-                  className="w-14 h-14 rounded-full border-2 border-[#9147FF]"
+                  src={stream.thumbnail}
+                  alt={stream.title}
+                  className="w-full h-[350px] md:h-[500px] object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                <div>
-                  <h3 className="text-white text-lg font-semibold">
-                    {stream.streamer}
-                  </h3>
-                  <p className="text-sm text-gray-300">{stream.category}</p>
-                  <p className="text-sm text-gray-400">
-                    {stream.viewers} viewers
-                  </p>
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+
+                {/* LIVE Badge */}
+                <div className="absolute top-4 left-4 bg-red-600 px-3 py-1 rounded text-xs font-semibold flex items-center gap-2">
+                  <FaCircle className="text-white text-[8px]" />
+                  LIVE
+                </div>
+                <div className="absolute top-4 right-4 text-white">
+                    <p className="text-sm text-white">
+                      {stream.viewers} viewers
+                    </p>
+                </div>
+
+                {/* Stream Info */}
+                <div className="absolute bottom-6 left-6 flex items-center gap-4">
+                  <img
+                    src={stream.avatar}
+                    alt="avatar"
+                    className="w-14 h-14 rounded-full border-2 border-[#9147FF]"
+                  />
+
+                  <div>
+                    <h3 className="text-white text-lg font-semibold">
+                      {stream.title.length > 40 ? stream.title.slice(0, 37) + "..." : stream.title}
+                    </h3>
+                    <h3 className="text-white text-sm font-light">
+                      {stream.streamer}
+                    </h3>
+                    <p className="text-sm text-gray-300">{stream.category}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      )}
     </div>
   );
 };
