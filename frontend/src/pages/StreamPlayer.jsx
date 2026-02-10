@@ -1,18 +1,51 @@
-import React, { useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import Hls from "hls.js";
 import Navbar from "../components/Navbar";
-import VideoSection from "../streams/VideoSection";
-import SideRecommendations from "../streams/SideRecommendations";
-import CommentsSection from "../streams/CommentsSection";
+import VideoSection from "../components/streams/VideoSection";
+import SideRecommendations from "../components/streams/SideRecommendations";
+import CommentsSection from "../components/streams/CommentsSection";
 import Footer from "../components/Footer";
+import { axiosInstance } from "../lib/axios";
 
 const StreamPlayer = () => {
   const videoRef = useRef(null);
-  const streamKey = "test2";
-  const hlsUrl = `http://stream.streamai.in:8080/hls/${streamKey}.m3u8`;
+  const { id } = useParams();
+  const [hlsUrl, setHlsUrl] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [streamData, setStreamData] = useState(null);
+
 
   useEffect(() => {
+    const fetchStream = async () => {
+      try {
+        const res = await axiosInstance.get(`streams/${id}`);
+        const stream = res.data.stream;
+
+        if (!stream.streamer?.stream_keys?.[0]?.stream_key) {
+          console.error("Stream key missing");
+          return;
+        }
+        const stream_key = stream.streamer.stream_keys[0].stream_key;
+        const url = `http://stream.streamai.in:8080/hls/${stream_key}.m3u8`;
+        setHlsUrl(url);
+        setStreamData(stream);
+      } catch (err) {
+        console.error("Failed to load stream", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStream();
+  }, [id]);
+
+
+  useEffect(() => {
+    if (!hlsUrl) return;
+
     const video = videoRef.current;
+    if (!video) return;
 
     if (Hls.isSupported()) {
       const hls = new Hls();
@@ -30,14 +63,20 @@ const StreamPlayer = () => {
     } else {
       console.error("HLS not supported in this browser.");
     }
+    
   }, [hlsUrl]);
+
+  if (loading) {
+    return <div className="text-white p-10">Loading stream...</div>;
+  }
+
 
   return (
     <>
       <Navbar />
       <div className="w-full min-h-screen bg-black/40 pb-10">
         <div className="flex flex-col lg:flex-row p-4 gap-6">
-          <VideoSection videoRef={videoRef} />
+          <VideoSection videoRef={videoRef} stream={streamData}/>
           <CommentsSection />
         </div>
         <SideRecommendations />

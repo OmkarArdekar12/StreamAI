@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div className="bg-black text-white min-h-screen overflow-x-hidden">
       <Hero />
-      <ContinueWatching />
+      {/* <ContinueWatching /> */}
       <Explore />
       <Footer />
     </div>

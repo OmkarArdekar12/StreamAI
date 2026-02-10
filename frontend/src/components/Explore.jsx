@@ -1,10 +1,43 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { FaFire, FaCircle } from "react-icons/fa";
 import { TbPlayerPlayFilled } from "react-icons/tb";
+import { axiosInstance } from "../lib/axios";
+
 
 const Explore = () => {
   const navigate = useNavigate();
+
+  const [streams, setStreams] = useState([]);
+
+    useEffect(() => {
+    const fetchStreams = async () => {
+      try {
+        const res = await axiosInstance.get("streams");
+
+        const formatted = res.data.streams.map((s) => ({
+          id: s.stream_id,
+          title: s.title,
+          thumbnail:
+            s.thumbnail_url ||
+            `https://picsum.photos/seed/${s.streamer?.username}/1280/720`, // fallback
+          avatar:
+            s.streamer?.avatar_url ||
+            `https://api.dicebear.com/7.x/initials/svg?seed=${s.streamer?.username}`,
+          streamer: s.streamer?.username || "Unknown",
+          category: s.category?.name || "Streaming",
+          viewers: s.viewer_count || 0,
+          isLive: s.is_live,
+        }));
+
+        setStreams(formatted);
+      } catch (err) {
+        console.error("Failed to fetch streams", err);
+      }
+    };
+
+    fetchStreams();
+  }, []);
 
   const liveStreams = [
     {
@@ -66,11 +99,14 @@ const Explore = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
-        {liveStreams.map((stream) => (
-          <div
-            key={stream.id}
-            onClick={() => navigate("/player")}
-            className="relative group bg-[#18181B] rounded-xl overflow-hidden cursor-pointer"
+        {streams.length === 0 ? (
+          <p className="text-white col-span-full text-center">No live streams available.</p>
+        ) : (
+          streams.filter(s => s.isLive).map((stream) => (
+            <div
+              key={stream.id}
+              onClick={() => navigate(`/player/${stream.id}`)}
+              className="relative group bg-[#18181B] rounded-xl overflow-hidden cursor-pointer"
             style={{ perspective: "1000px" }}
           >
             {/* 3D Wrapper */}
@@ -81,14 +117,12 @@ const Explore = () => {
               }}
             >
               {/* VIDEO */}
-              <video
-                src={stream.video}
-                className="w-full h-56 object-cover transition-all duration-500
-                           group-hover:opacity-60"
-                autoPlay
-                muted
-                loop
-              />
+                <img
+                  src={stream.thumbnail}
+                  alt={stream.title.length > 20 ? stream.title.slice(0, 17) + "..." : stream.title}
+                  className="w-full h-full md:h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  
+                />
 
               {/* Strong 3D Effect */}
               <div
@@ -117,6 +151,11 @@ const Explore = () => {
               <FaCircle className="text-white text-[8px] animate-pulse" />
               LIVE
             </div>
+            <div className="absolute top-4 right-4 text-white">
+              <p className="text-sm text-white">
+                {stream.viewers} viewers
+                </p>
+            </div>
 
             {/* Hover Overlay (LESS BLUR) */}
             <div
@@ -137,20 +176,27 @@ const Explore = () => {
             </div>
 
             {/* Bottom Info */}
-            <div
-              className="absolute bottom-0 left-0 w-full
-                            bg-gradient-to-t from-black via-black/70 to-transparent
-                            p-4"
-            >
+            <div className="absolute bottom-0 left-0 flex w-full items-center gap-4 bg-gradient-to-t from-black via-black/70 to-transparent p-4">
+              <img
+                src={stream.avatar}
+                alt="avatar"
+                className="w-10 h-10 rounded-full border-2 border-[#9147FF]"
+              />
+              <div>
               <h3 className="text-white text-base font-semibold mb-1">
-                {stream.title}
+                {stream.title.length > 20 ? stream.title.slice(0, 17) + "..." : stream.title}
               </h3>
 
-              <p className="text-gray-400 text-sm">{stream.viewers}</p>
+              <h3 className="text-white text-sm font-light">
+                {stream.streamer}
+              </h3>
+              </div>
             </div>
           </div>
-        ))}
+        )))}
+      
       </div>
+
     </section>
   );
 };

@@ -1,5 +1,6 @@
 import prisma from "../config/prismaClient.js";
 
+
 // Create Stream
 export const createStream = async (req, res) => {
   try {
@@ -59,8 +60,17 @@ export const getStreamById = async (req, res) => {
     const stream = await prisma.stream.findUnique({
       where: { stream_id: id },
       include: {
-        category: true,  // Include category details
-        streamer: true,  // Include streamer (user) details
+        category: true,
+        streamer: {
+          select: {
+            stream_keys: {
+              select: {
+                stream_key: true,   // or whatever your field name is
+              },
+              take: 1,
+            },
+          },
+        },
       },
     });
 
