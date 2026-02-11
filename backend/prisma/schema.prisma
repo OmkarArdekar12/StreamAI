@@ -94,6 +94,7 @@ model Chat {
   chat_id         String        @id @default(cuid())
   stream_id       String
   user_id         String
+  username        String
   message         String
   sent_at         DateTime      @default(now())
 

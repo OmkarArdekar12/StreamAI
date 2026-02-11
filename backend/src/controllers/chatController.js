@@ -16,3 +16,21 @@ export const saveChatMessage = async (stream_id, user_id, message) => {
     throw new Error("Error saving message");
   }
 };
+
+export const getChatMessagesByStream = async (req, res) => {
+  try {
+    const { stream_id } = req.params;
+    const messages = await prisma.chat.findMany({
+      where: {
+        stream_id: stream_id,
+      },
+      orderBy: {
+        sent_at: "asc",
+      },
+    });
+    return res.json(messages);
+  } catch (error) {
+    console.error("Error fetching chat messages:", error);
+    throw new Error("Error fetching messages");
+  }
+};

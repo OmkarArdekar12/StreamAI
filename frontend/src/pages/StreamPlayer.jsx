@@ -4,7 +4,7 @@ import Hls from "hls.js";
 import Navbar from "../components/Navbar";
 import VideoSection from "../components/streams/VideoSection";
 import SideRecommendations from "../components/streams/SideRecommendations";
-import CommentsSection from "../components/streams/CommentsSection";
+import ChatSection from "../components/streams/ChatSection";
 import Footer from "../components/Footer";
 import { axiosInstance } from "../lib/axios";
 
@@ -14,6 +14,19 @@ const StreamPlayer = () => {
   const [hlsUrl, setHlsUrl] = useState("");
   const [loading, setLoading] = useState(true);
   const [streamData, setStreamData] = useState(null);
+
+  const [streamId, setStreamId] = useState(null);
+  const [userId, setUserId] = useState(null);  // You can set this based on your auth system
+  const [username, setUsername] = useState(null);  // Optional: for displaying username in chat
+
+  useEffect(() => {
+    setUserId(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).user_id : null); // Example of getting user ID from localStorage
+  }, []);
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).username : null); // Update username if localStorage changes
+  },[]);
+  
 
 
   useEffect(() => {
@@ -26,9 +39,11 @@ const StreamPlayer = () => {
           console.error("Stream key missing");
           return;
         }
+
         const stream_key = stream.streamer.stream_keys[0].stream_key;
-        const url = `http://stream.streamai.in:8080/hls/${stream_key}.m3u8`;
+        const url = `http://stream.streamai.in:8080/live/${stream_key}.m3u8`;
         setHlsUrl(url);
+        setStreamId(stream.stream_id);
         setStreamData(stream);
       } catch (err) {
         console.error("Failed to load stream", err);
@@ -77,11 +92,11 @@ const StreamPlayer = () => {
       <div className="w-full min-h-screen bg-black/40 pb-10">
         <div className="flex flex-col lg:flex-row p-4 gap-6">
           <VideoSection videoRef={videoRef} stream={streamData}/>
-          <CommentsSection />
+          <ChatSection streamId={streamId} userId={userId} username={username}/>
         </div>
-        <SideRecommendations />
+        {/* <SideRecommendations /> */}
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
