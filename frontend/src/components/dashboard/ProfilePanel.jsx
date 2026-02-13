@@ -28,7 +28,7 @@ const ProfilePanel = () => {
       formData.append("bio", bio);
       if (profilePic) formData.append("profile_picture", profilePic);
 
-      await axios.put("http://localhost:5000/api/users/update", formData, {
+      await axios.put("http://localhost:3000/api/users/profile", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",

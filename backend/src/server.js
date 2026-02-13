@@ -1,7 +1,7 @@
 import express, { json } from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoute.js';
-import userRutes from './routes/userRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import streamkeyRoutes from './routes/streamkeyRoutes.js';
 import streamRoutes from './routes/streamRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
@@ -28,7 +28,7 @@ app.use(cors({
 }));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRutes);
+app.use('/api/users', userRoutes);
 app.use('/api/streamkey', streamkeyRoutes);
 app.use('/api/streams', streamRoutes);
 app.use('/api/category', categoryRoutes);
