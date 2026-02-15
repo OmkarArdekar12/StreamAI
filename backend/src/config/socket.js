@@ -15,7 +15,8 @@ const MAX_MESSAGES = 5;
 const setupSocketIO = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: process.env.FRONTEND_URL,
+      origin: [process.env.FRONTEND_URL],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       credentials: true,
     },
   });

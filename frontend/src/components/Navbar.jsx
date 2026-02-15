@@ -13,8 +13,8 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // const { authUser, logout, isAuthenticate, isCheckingAuth } = useAuthStore();
-  const { logout, isAuthenticate, isCheckingAuth } = useAuthStore();
+  const { authUser, logout, isAuthenticate, isCheckingAuth } = useAuthStore();
+  // const { logout, isAuthenticate, isCheckingAuth } = useAuthStore();
 
   /* ================= AUTH CHECK ================= */
   useEffect(() => {
@@ -65,7 +65,7 @@ const Navbar = () => {
     );
   }
 
-  const authUser = false;
+  // const authUser = false;
 
   return (
     <>
