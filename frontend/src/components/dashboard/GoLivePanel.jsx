@@ -21,7 +21,7 @@ const GoLivePanel = () => {
   const [username, setUsername] = useState("");
 
   const [HLS_URL, setHLS_URL] = useState("");
-  const socket = io(import.meta.env.VITE_BACKEND_URL, {
+  const socket = io(import.meta.env.VITE_SOCKET_URL, {
     withCredentials: true,
   });
 
