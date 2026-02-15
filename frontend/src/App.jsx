@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Loader } from "lucide-react";
+import { Home, Loader } from "lucide-react";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -57,6 +57,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<HomePage />} />
         </Routes>
       </BrowserRouter>
     </div>
@@ -64,7 +65,6 @@ const App = () => {
 };
 
 export default App;
-
 
 // import React, { useEffect } from "react";
 // import "slick-carousel/slick/slick.css";
