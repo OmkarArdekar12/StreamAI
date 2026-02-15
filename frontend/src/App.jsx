@@ -15,6 +15,7 @@ import CreatorDashboard from "./pages/CreatorDashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoggedInRoute from "./components/LoggedInRoute";
+import NotFoundRedirect from "./components/NotFoundRedirect";
 
 const App = () => {
   const { authUser } = useAuthStore();
@@ -57,7 +58,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<HomePage />} />
+          <Route path="*" element={<NotFoundRedirect />} />
         </Routes>
       </BrowserRouter>
     </div>
