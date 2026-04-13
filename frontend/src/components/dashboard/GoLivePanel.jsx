@@ -356,12 +356,12 @@ const GoLivePanel = () => {
         {/* MESSAGES */}
         <div className="flex-1 overflow-y-auto p-4 text-sm space-y-3 scrollbar-thin scrollbar-thumb-gray-700">
           {chats.map((c, i) => (
-            <div key={i} className="flex flex-col">
+            <div key={i} className="flex gap-2 items-center">
               <span
                 style={{ color: getUserColor(c.username) }}
-                className="font-semibold text-xs"
+                className="font-semibold text-sm"
               >
-                {c.username}
+                {c.username}:
               </span>
 
               <span className="text-gray-200 text-sm">{c.message}</span>
@@ -373,6 +373,11 @@ const GoLivePanel = () => {
         <div className="p-3 border-t border-gray-800 flex gap-2">
           <input
             value={chatMessage}
+            onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      sendChatMessage(); // same function as onClick
+    }
+  }}
             onChange={(e) => setChatMessage(e.target.value)}
             placeholder="Type a message..."
             className="flex-1 bg-gray-900 border placeholder:text-gray-400 border-gray-800 focus:border-[#5af04f] focus:ring-1 focus:ring-[#5af04f] p-2 rounded-md outline-none text-sm"

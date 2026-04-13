@@ -3,7 +3,7 @@ import { axiosInstance } from "../../lib/axios";
 
 /* ================= CONFIG ================= */
 // 👉 Switch this to false when backend is ready
-const USE_DUMMY_DATA = true;
+const USE_DUMMY_DATA = false;
 
 /* ================= DUMMY DATA ================= */
 const dummyFollowers = [

@@ -53,9 +53,9 @@ const App = () => {
           <Route
             path="/dashboard"
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
               <CreatorDashboard />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route path="*" element={<NotFoundRedirect />} />

@@ -34,7 +34,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeTab, setActiveTab }) => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         {sidebarOpen && (
-          <h2 className="text-xl font-bold text-[#5af04f] hover:text-[#7b35d9] flex items-center justify-center gap-2 group">
+          <h2 className="text-xl font-bold text-[#7b35d9] hover:text-[#7b35d9] flex items-center justify-center gap-2 group">
             <img
               src="./logo/STREAMAI_PNG.png"
               alt="StreamAI"
